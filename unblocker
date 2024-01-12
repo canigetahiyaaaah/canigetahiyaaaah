@@ -1,0 +1,109 @@
+/**
+ * Represents an Unblock Game.
+ */
+class UnblockGame {
+    /**
+     * Constructor for the UnblockGame class.
+     *
+     * @param {number} width - The width of the game board.
+     * @param {number} height - The height of the game board.
+     */
+    constructor(width, height) {
+        /** @private */
+        this.width = width;
+
+        /** @private */
+        this.height = height;
+
+        /** @private */
+        this.board = this.createBoard();
+    }
+
+    /**
+     * Creates the game board.
+     *
+     * @returns {Array} The game board.
+     */
+    createBoard() {
+        const board = [];
+        for (let i = 0; i < this.height; i++) {
+            board.push(new Array(this.width).fill(0));
+        }
+        return board;
+    }
+
+    /**
+     * Places a block on the game board.
+     *
+     * @param {number} x - The x-coordinate of the block.
+     * @param {number} y - The y-coordinate of the block.
+     * @throws {Error} Throws an error if the block is out of bounds.
+     */
+    placeBlock(x, y) {
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+            throw new Error("Block is out of bounds.");
+        }
+        this.board[y][x] = 1;
+    }
+
+    /**
+     * Moves a block on the game board.
+     *
+     * @param {number} fromX - The current x-coordinate of the block.
+     * @param {number} fromY - The current y-coordinate of the block.
+     * @param {number} toX - The new x-coordinate of the block.
+     * @param {number} toY - The new y-coordinate of the block.
+     * @throws {Error} Throws an error if the block is out of bounds or the move is invalid.
+     */
+    moveBlock(fromX, fromY, toX, toY) {
+        if (fromX < 0 || fromX >= this.width || fromY < 0 || fromY >= this.height ||
+            toX < 0 || toX >= this.width || toY < 0 || toY >= this.height) {
+            throw new Error("Block is out of bounds.");
+        }
+
+        if (this.board[fromY][fromX] !== 1 || this.board[toY][toX] !== 0) {
+            throw new Error("Invalid move.");
+        }
+
+        this.board[fromY][fromX] = 0;
+        this.board[toY][toX] = 1;
+    }
+
+    /**
+     * Checks if the game is solved.
+     *
+     * @returns {boolean} True if the game is solved, false otherwise.
+     */
+    isSolved() {
+        // Check if the red block has reached the right edge of the board
+        for (let y = 0; y < this.height; y++) {
+            if (this.board[y][this.width - 1] === 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+// Usage Example for UnblockGame
+
+// Create a 6x6 Unblock Game
+const game = new UnblockGame(6, 6);
+
+// Place blocks on the game board
+game.placeBlock(2, 2);
+game.placeBlock(3, 2);
+game.placeBlock(4, 2);
+game.placeBlock(4, 3);
+game.placeBlock(4, 4);
+
+// Move the red block to the right edge of the board
+game.moveBlock(2, 2, 2, 5);
+game.moveBlock(3, 2, 3, 5);
+game.moveBlock(4, 2, 4, 5);
+game.moveBlock(4, 3, 4, 5);
+game.moveBlock(4, 4, 4, 5);
+
+// Check if the game is solved
+const solved = game.isSolved();
+console.log(`Is the game solved? ${solved}`);
