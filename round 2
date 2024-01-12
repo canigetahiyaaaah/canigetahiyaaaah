@@ -1,0 +1,108 @@
+/**
+ * Represents an unblocks game.
+ */
+class UnblocksGame {
+    /**
+     * Constructor for the UnblocksGame class.
+     * Initializes the game board and sets the initial position of the blocks.
+     *
+     * @param {number} size - The size of the game board.
+     * @param {number} targetRow - The row number of the target block.
+     * @param {number} targetCol - The column number of the target block.
+     * @param {number[][]} blocks - The positions of the blocks on the game board.
+     */
+    constructor(size, targetRow, targetCol, blocks) {
+        this.size = size;
+        this.targetRow = targetRow;
+        this.targetCol = targetCol;
+        this.blocks = blocks;
+    }
+
+    /**
+     * Moves a block in the specified direction.
+     *
+     * @param {number} blockIndex - The index of the block to move.
+     * @param {string} direction - The direction to move the block ('up', 'down', 'left', 'right').
+     * @returns {boolean} True if the block was moved successfully, false otherwise.
+     */
+    moveBlock(blockIndex, direction) {
+        const block = this.blocks[blockIndex];
+        let newRow = block[0];
+        let newCol = block[1];
+
+        switch (direction) {
+            case 'up':
+                newRow--;
+                break;
+            case 'down':
+                newRow++;
+                break;
+            case 'left':
+                newCol--;
+                break;
+            case 'right':
+                newCol++;
+                break;
+            default:
+                return false;
+        }
+
+        if (this.isValidMove(newRow, newCol)) {
+            this.blocks[blockIndex] = [newRow, newCol];
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if a move is valid.
+     *
+     * @param {number} row - The row number of the move.
+     * @param {number} col - The column number of the move.
+     * @returns {boolean} True if the move is valid, false otherwise.
+     */
+    isValidMove(row, col) {
+        if (row < 0 || row >= this.size || col < 0 || col >= this.size) {
+            return false;
+        }
+
+        for (let i = 0; i < this.blocks.length; i++) {
+            const block = this.blocks[i];
+            if (block[0] === row && block[1] === col) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the target block is unblocked.
+     *
+     * @returns {boolean} True if the target block is unblocked, false otherwise.
+     */
+    isTargetUnblocked() {
+        for (let i = 0; i < this.blocks.length; i++) {
+            const block = this.blocks[i];
+            if (block[0] === this.targetRow && block[1] === this.targetCol) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+// Usage Example for UnblocksGame
+
+// Create a new unblocks game with a 4x4 game board
+const game = new UnblocksGame(4, 2, 2, [[0, 0], [1, 0], [2, 0], [2, 1], [2, 3], [3, 3]]);
+
+// Move the first block to the right
+const moved = game.moveBlock(0, 'right');
+console.log(`Block moved: ${moved}`);
+
+// Check if the target block is unblocked
+const unblocked = game.isTargetUnblocked();
+console.log(`Target block unblocked: ${unblocked}`);
